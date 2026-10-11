@@ -106,7 +106,7 @@
 
   
 
-  <div class="window glass active" id="win-settings">
+  <div class="window glass active" id="win-">
     <div class="title-bar">
       <div class="title-bar-text"><span class="win-icon icon-settings"></span>SETTINGS</div>
       <div class="title-bar-controls">
@@ -193,37 +193,38 @@
           </fieldset>
 
 <fieldset style="border: 2px solid #808080; padding: 10px; margin-top: 10px;">
-            <legend>Behavior</legend>
-            
-            <label for="show-clock-toggle" style="display: flex; align-items: center; justify-content: space-between; font-size: 13px; font-weight: bold; cursor: pointer; flex-wrap: nowrap; gap: 25px;">
-              <span style="display: block;">Show taskbar clock</span>
-              <input id="show-clock-toggle" type="checkbox" checked>
-            </label>
+<fieldset style="border: 2px solid #808080; padding: 10px; margin-top: 10px;">
+  <legend>Behavior</legend>
+  
+  <label for="show-clock-toggle" style="display: flex; align-items: center; justify-content: space-between; font-size: 13px; font-weight: bold; cursor: pointer; flex-wrap: nowrap; gap: 25px;">
+    <span style="display: block;">Show taskbar clock</span>
+    <input id="show-clock-toggle" type="checkbox" checked>
+  </label>
 
-            <label for="show-cat-toggle" style="display: flex; align-items: center; justify-content: space-between; font-size: 13px; font-weight: bold; cursor: pointer; flex-wrap: nowrap; gap: 25px; margin-top: 10px;">
-              <span style="display: block;">Show taskbar cat</span>
-              <input id="show-cat-toggle" type="checkbox" checked>
-            </label>
+  <label for="show-cat-toggle" style="display: flex; align-items: center; justify-content: space-between; font-size: 13px; font-weight: bold; cursor: pointer; flex-wrap: nowrap; gap: 25px; margin-top: 10px;">
+    <span style="display: block;">Show taskbar cat</span>
+    <input id="show-cat-toggle" type="checkbox" checked>
+  </label>
 
-            <label for="cat-size-slider" style="display: flex; align-items: center; justify-content: space-between; font-size: 13px; font-weight: bold; cursor: pointer; flex-wrap: nowrap; gap: 25px; margin-top: 10px;">
-              <span style="display: block;">Cat size scale</span>
-              <input id="cat-size-slider" type="range" min="0.5" max="2.5" step="0.1" value="1" style="width: 100px; cursor: pointer;">
-            </label>
+  <label for="cat-size-slider" style="display: flex; align-items: center; justify-content: space-between; font-size: 13px; font-weight: bold; cursor: pointer; flex-wrap: nowrap; gap: 25px; margin-top: 10px;">
+    <span style="display: block;">Cat size scale</span>
+    <input id="cat-size-slider" type="range" min="0.5" max="2.5" step="0.1" value="1" style="width: 100px; cursor: pointer;">
+  </label>
 
-            <label for="enable-meow-toggle" style="display: flex; align-items: center; justify-content: space-between; font-size: 13px; font-weight: bold; cursor: pointer; flex-wrap: nowrap; gap: 25px; margin-top: 10px;">
-              <span style="display: block;">Enable cat meow</span>
-              <input id="enable-meow-toggle" type="checkbox" checked>
-            </label>
+  <label for="enable-meow-toggle" style="display: flex; align-items: center; justify-content: space-between; font-size: 13px; font-weight: bold; cursor: pointer; flex-wrap: nowrap; gap: 25px; margin-top: 10px;">
+    <span style="display: block;">Enable cat meow</span>
+    <input id="enable-meow-toggle" type="checkbox" checked>
+  </label>
 
-            <label for="meow-sound-select" style="display: flex; align-items: center; justify-content: space-between; font-size: 13px; font-weight: bold; cursor: pointer; flex-wrap: nowrap; gap: 25px; margin-top: 10px;">
-              <span style="display: block;">Meow sound</span>
-              <select id="meow-sound-select" style="cursor: pointer;">
-                <option value="meow1">Meow 1</option>
-                <option value="meow2">Meow 2</option>
-                <option value="meow3">Meow 3</option>
-              </select>
-            </label>
-          </fieldset>
+  <label for="meow-sound-select" style="display: flex; align-items: center; justify-content: space-between; font-size: 13px; font-weight: bold; cursor: pointer; flex-wrap: nowrap; gap: 25px; margin-top: 10px;">
+    <span style="display: block;">Meow sound</span>
+    <select id="meow-sound-select" style="cursor: pointer;">
+      <option value="meow1">Meow 1</option>
+      <option value="meow2">Meow 2</option>
+      <option value="meow3">Meow 3</option>
+    </select>
+  </label>
+
   <label for="cat-theme-select" style="display: flex; align-items: center; justify-content: space-between; font-size: 13px; font-weight: bold; cursor: pointer; flex-wrap: nowrap; gap: 25px; margin-top: 10px;">
     <span style="display: block;">Cat theme</span>
     <select id="cat-theme-select" style="cursor: pointer;">
@@ -233,8 +234,7 @@
     </select>
   </label>
 
-            <fieldset style="border: 2px solid #808080; padding: 10px; margin-top: 10px;">
- <label for="dark-mode-toggle" style="display: flex; align-items: center; justify-content: space-between; font-size: 13px; font-weight: bold; cursor: pointer; flex-wrap: nowrap; gap: 25px;">
+  <label for="dark-mode-toggle" style="display: flex; align-items: center; justify-content: space-between; font-size: 13px; font-weight: bold; cursor: pointer; flex-wrap: nowrap; gap: 25px; margin-top: 10px;">
     <span style="display: block;">Dark mode</span>
     <input id="dark-mode-toggle" type="checkbox">
   </label>
@@ -249,20 +249,7 @@
     <input id="block-close-toggle" type="checkbox">
   </label>
 </fieldset>
-            
-          <fieldset style="border: 2px solid #808080; padding: 10px; margin-top: 10px;">
-            <legend>Backup & Restore</legend>
-            <div style="font-size: 12px; margin-bottom: 8px;">Export every saved setting (theme, wallpapers, cat, etc.) to a file, or import one you have saved.</div>
-            <div style="display: flex; gap: 8px; flex-wrap: wrap;">
-              <button type="button" id="export-settings-btn" style="padding: 6px 14px; cursor: pointer; font-size: 12px; font-weight: bold;">Export Settings</button>
-              <button type="button" id="import-settings-btn" style="padding: 6px 14px; cursor: pointer; font-size: 12px; font-weight: bold;">Import Settings</button>
-              <input type="file" id="import-settings-input" accept="on,application/json" style="display: none;">
-            </div>
-            <div id="backup-status" style="font-size: 11px; color: #444; margin-top: 6px;"></div>
-          </fieldset>
-        </div>
-    </div>
-  </div>
+
 
   <div class="window glass active" id="win-reports">
     <div class="title-bar">
