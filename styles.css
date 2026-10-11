@@ -343,8 +343,75 @@ div[id^="win-uploaded-"] .window-body {
     box-shadow: 0 2px 6px rgba(0, 120, 215, 0.4), inset 0 1px 0 rgba(255, 255, 255, 0.85);
 }
 
+/* --- DARK MODE ---
+   Only recolors the light content inside windows (and the game cards).
+   Title bars, borders and the taskbar keep the theme's own look.
+   Uses [style*=...] because most of the light text/backgrounds are inline styles. */
+body.dark-mode .window-body {
+    background: #1e1e1e !important;
+    color: #e8e8e8 !important;
+}
+
+body.dark-mode .window-body h1,
+body.dark-mode .window-body h2,
+body.dark-mode .window-body p,
+body.dark-mode .window-body li,
+body.dark-mode .window-body label,
+body.dark-mode .window-body span,
+body.dark-mode .window-body legend,
+body.dark-mode .window-body div {
+    color: #e8e8e8 !important;
+}
+
+/* Greyed helper/status text */
+body.dark-mode .window-body [style*="#444"],
+body.dark-mode .window-body [style*="#222"],
+body.dark-mode .window-body [style*="#111"] {
+    color: #b5b5b5 !important;
+}
+
+body.dark-mode .window-body fieldset {
+    border-color: #555 !important;
+    background: transparent !important;
+}
+
+body.dark-mode .window-body input[type="text"],
+body.dark-mode .window-body select {
+    background: #2b2b2b !important;
+    color: #e8e8e8 !important;
+    border: 1px solid #666 !important;
+    box-shadow: none !important;
+}
+
+body.dark-mode .window-body button {
+    background: #3a3a3a !important;
+    color: #e8e8e8 !important;
+    border: 1px solid #666 !important;
+}
+
+/* Game cards (all three theme variants) */
+body.dark-mode .pcgame-card {
+    background: #2a2a2a !important;
+    border-color: #555 !important;
+    box-shadow: none !important;
+}
+body.dark-mode .pcgame-card:hover {
+    background: #383838 !important;
+}
+body.dark-mode .pcgame-title {
+    color: #e8e8e8 !important;
+}
+body.dark-mode .pcgame-thumb {
+    border-color: #555 !important;
+}
+
+/* Keep the uploaded image panes black like before */
+body.dark-mode div[id^="win-uploaded-"] .window-body {
+    background: #000 !important;
+}
+
 /* Force checkbox visibility and alignment across all themes */
-#show-clock-toggle, #show-cat-toggle, #enable-meow-toggle {
+#show-clock-toggle, #show-cat-toggle, #enable-meow-toggle, #dark-mode-toggle, #tab-cloak-toggle, #block-close-toggle {
     position: relative !important;
     width: 18px !important;
     height: 18px !important;
@@ -360,7 +427,7 @@ div[id^="win-uploaded-"] .window-body {
     appearance: auto !important;
 }
 
-#show-clock-toggle:checked, #show-cat-toggle:checked, #enable-meow-toggle:checked {
+#show-clock-toggle:checked, #show-cat-toggle:checked, #enable-meow-toggle:checked, #dark-mode-toggle:checked, #tab-cloak-toggle:checked, #block-close-toggle:checked {
     background-color: #fff !important;
 }
 
