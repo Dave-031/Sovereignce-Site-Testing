@@ -472,7 +472,8 @@ body.dark-mode .window-body fieldset {
     background: transparent !important;
 }
 body.dark-mode .window-body legend {
-    background: transparent !important;
+    background: var(--dm-win) !important;
+    padding: 0 4px !important;
 }
 
 /* ---------- Form controls: invert so each theme keeps its own style ---------- */
