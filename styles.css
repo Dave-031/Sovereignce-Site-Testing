@@ -343,70 +343,253 @@ div[id^="win-uploaded-"] .window-body {
     box-shadow: 0 2px 6px rgba(0, 120, 215, 0.4), inset 0 1px 0 rgba(255, 255, 255, 0.85);
 }
 
-/* --- DARK MODE ---
-   Only recolors the light content inside windows (and the game cards).
-   Title bars, borders and the taskbar keep the theme's own look.
-   Uses [style*=...] because most of the light text/backgrounds are inline styles. */
-body.dark-mode .window-body select option {
-    background: #2b2b2b;
-    color: #e8e8e8 !important;
+/* =====================================================================
+   DARK MODE
+   - Window frames, title bars, taskbar and game cards are re-skinned
+     per theme (98 / XP / 7) using the palette variables below.
+   - Form controls (buttons, inputs, selects, sliders, radio art) are
+     inverted with a CSS filter, so each theme keeps its own bevels,
+     rounding and gradients instead of getting flattened.
+   - Don't set `color-scheme: dark` on body/html: it would fight the
+     filter and make input text unreadable.
+   ===================================================================== */
+
+/* ---------- Shared palette ---------- */
+body.dark-mode {
+    --dm-text: #e8e8e8;
+    --dm-muted: #aeb4bd;
+    --dm-line: #5a5f68;
+    scrollbar-color: #6b7078 #23262b;   /* dark scrollbars (replaces the retro ones) */
 }
 
-body.dark-mode .window-body h1,
-body.dark-mode .window-body h2,
-body.dark-mode .window-body p,
-body.dark-mode .window-body li,
-body.dark-mode .window-body label,
-body.dark-mode .window-body span,
-body.dark-mode .window-body legend,
-body.dark-mode .window-body div {
-    color: #e8e8e8 !important;
+/* ---------- Per-theme palette ---------- */
+body.dark-mode[data-theme="win98"] {
+    --dm-win: #2d2d2d;
+    --dm-task: #2d2d2d;
+    --dm-line: #5a5a5a;
+    --dm-btn-bg: #3b3b3b;
+    --dm-btn-border: none;
+    --dm-btn-radius: 0;
+    --dm-btn-shadow: inset -1px -1px #000, inset 1px 1px #707070, inset -2px -2px #1c1c1c, inset 2px 2px #545454;
+    --dm-btn-shadow-down: inset -1px -1px #707070, inset 1px 1px #000, inset -2px -2px #545454, inset 2px 2px #1c1c1c;
 }
 
-/* Greyed helper/status text */
+body.dark-mode[data-theme="winxp"] {
+    --dm-win: #2b2e38;
+    --dm-task: #1c2438;
+    --dm-line: #4a5575;
+    --dm-btn-bg: linear-gradient(180deg, #4b4f5c, #343742 86%, #2b2e38);
+    --dm-btn-border: 1px solid #0f1a3d;
+    --dm-btn-radius: 3px;
+    --dm-btn-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.1);
+    --dm-btn-shadow-down: inset 0 0 0 1px rgba(0, 0, 0, 0.55);
+}
+
+body.dark-mode[data-theme="win7"] {
+    --dm-win: #1f242c;
+    --dm-task: rgba(16, 20, 28, 0.92);
+    --dm-line: #4a5666;
+    --dm-btn-bg: linear-gradient(180deg, #4a4f58 45%, #3a3f47 46%, #2c3037);
+    --dm-btn-border: 1px solid #0b0d10;
+    --dm-btn-radius: 3px;
+    --dm-btn-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.14);
+    --dm-btn-shadow-down: inset 0 0 0 1px rgba(0, 0, 0, 0.6);
+}
+
+/* =====================================================================
+   WINDOW FRAMES + TITLE BARS
+   ===================================================================== */
+
+/* --- Windows 98 --- */
+body.dark-mode[data-theme="win98"] .window {
+    background: var(--dm-win);
+    box-shadow: inset -1px -1px #000, inset 1px 1px #5c5c5c, inset -2px -2px #1b1b1b, inset 2px 2px #444;
+}
+body.dark-mode[data-theme="win98"] .title-bar {
+    background: linear-gradient(90deg, #10104a, #2f5f8f);
+}
+
+/* --- Windows XP --- */
+body.dark-mode[data-theme="winxp"] .window {
+    background: var(--dm-win);
+    box-shadow: inset -1px -1px #050a30, inset 1px 1px #0b1a66, inset -2px -2px #08124a,
+                inset 2px 2px #12308a, inset -3px -3px #0e2272, inset 3px 3px #0f2a80;
+}
+body.dark-mode[data-theme="winxp"] .title-bar {
+    background: linear-gradient(180deg, #3a6fc2, #123a9a 8%, #11389a 40%, #1d58cf 88%, #1d58cf 93%, #164ab8 95%, #0c2a80 96%, #0c2a80);
+    border-top-color: #0b1f66;
+    border-left-color: #0b1f66;
+    border-right-color: #08124a;
+    text-shadow: 1px 1px #050a30;
+}
+
+/* --- Windows 7 (glass) --- */
+body.dark-mode[data-theme="win7"] .window,
+body.dark-mode[data-theme="win7"] .window.glass {
+    background: rgba(22, 28, 40, 0.78) !important;
+    background-image: none !important;
+    border-color: rgba(0, 0, 0, 0.75) !important;
+    box-shadow: 0 0 0 1px rgba(255, 255, 255, 0.28) inset, 0 8px 28px rgba(0, 0, 0, 0.6) !important;
+}
+body.dark-mode[data-theme="win7"] .title-bar-text {
+    color: #fff !important;
+    text-shadow: 0 0 8px #000, 0 0 3px #000 !important;
+}
+body.dark-mode[data-theme="win7"] .window-body {
+    border-color: rgba(0, 0, 0, 0.7) !important;
+}
+
+/* =====================================================================
+   WINDOW CONTENT
+   ===================================================================== */
+body.dark-mode .window-body {
+    background: var(--dm-win) !important;
+    color: var(--dm-text) !important;
+}
+
+/* All text, including the inline color:#000 / #222 ones */
+body.dark-mode .window-body :is(h1, h2, p, li, span, div, label, legend) {
+    color: var(--dm-text) !important;
+}
+
+/* Greyed helper / status text */
 body.dark-mode .window-body [style*="#444"],
 body.dark-mode .window-body [style*="#222"],
 body.dark-mode .window-body [style*="#111"] {
-    color: #b5b5b5 !important;
+    color: var(--dm-muted) !important;
 }
 
+/* The red "failed to load" message should stay red */
+body.dark-mode .window-body span[style*="red"] {
+    color: #ff7b7b !important;
+}
+
+/* Fieldsets: the retro themes draw them with border-image (white bevel
+   lines) which looks harsh on dark, so use a plain dim border instead. */
 body.dark-mode .window-body fieldset {
-    border-color: #555 !important;
+    border: 2px solid var(--dm-line) !important;
+    border-image: none !important;
+    background: transparent !important;
+}
+body.dark-mode .window-body legend {
     background: transparent !important;
 }
 
-body.dark-mode .window-body input[type="text"],
-body.dark-mode .window-body select {
+/* ---------- Form controls: invert so each theme keeps its own style ---------- */
+body.dark-mode .window-body :is(
+    button,
+    select,
+    textarea,
+    input:not([type="checkbox"]):not([type="radio"]):not([type="file"])
+) {
+    filter: invert(0.88) hue-rotate(180deg);
+}
+
+/* Theme-drawn radio buttons (the circle + dot are pseudo-elements) */
+body.dark-mode .window-body input[type="radio"] + label::before,
+body.dark-mode .window-body input[type="radio"] + label::after {
+    filter: invert(0.88) hue-rotate(180deg);
+}
+
+/* Native checkboxes (the Behavior toggles) just need the dark variant */
+body.dark-mode .window-body input[type="checkbox"] {
+    color-scheme: dark;
+}
+
+/* Dropdown lists */
+body.dark-mode select option,
+body.dark-mode select:focus option {
     background: #2b2b2b !important;
     color: #e8e8e8 !important;
-    border: 1px solid #666 !important;
-    box-shadow: none !important;
 }
 
-body.dark-mode .window-body button {
-    background: #3a3a3a !important;
-    color: #e8e8e8 !important;
-    border: 1px solid #666 !important;
-}
-
-/* Game cards (all three theme variants) */
-body.dark-mode .pcgame-card {
-    background: #2a2a2a !important;
-    border-color: #555 !important;
-    box-shadow: none !important;
-}
-body.dark-mode .pcgame-card:hover {
-    background: #383838 !important;
-}
+/* =====================================================================
+   GAME CARDS (GAMES + PC GAMES windows)
+   ===================================================================== */
 body.dark-mode .pcgame-title {
-    color: #e8e8e8 !important;
-}
-body.dark-mode .pcgame-thumb {
-    border-color: #555 !important;
+    color: var(--dm-text) !important;
 }
 
-/* Keep the uploaded image panes black like before */
-body.dark-mode div[id^="win-uploaded-"] .window-body {
+/* 98 */
+body.dark-mode[data-theme="win98"] .pcgame-card {
+    background: #333;
+    border: none;
+    box-shadow: var(--dm-btn-shadow);
+}
+body.dark-mode[data-theme="win98"] .pcgame-card:hover {
+    background: #404040;
+}
+body.dark-mode[data-theme="win98"] .pcgame-thumb {
+    border-color: #000 #6a6a6a #6a6a6a #000;
+}
+
+/* XP */
+body.dark-mode[data-theme="winxp"] .pcgame-card {
+    background: linear-gradient(to bottom, #3a3d46, #2a2c33);
+    border: 1px solid #0f1a3d;
+    box-shadow: 1px 1px 3px rgba(0, 0, 0, 0.6);
+}
+body.dark-mode[data-theme="winxp"] .pcgame-card:hover {
+    background: linear-gradient(to bottom, #2f4a80, #1f3566);
+    border-color: #4f86e8;
+    box-shadow: 0 0 4px rgba(79, 134, 232, 0.6);
+}
+body.dark-mode[data-theme="winxp"] .pcgame-thumb {
+    border-color: #0f1a3d;
+}
+
+/* 7 */
+body.dark-mode[data-theme="win7"] .pcgame-card {
+    background: linear-gradient(to bottom, #323842, #252a33);
+    border: 1px solid #4a5666;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.5), inset 0 1px 0 rgba(255, 255, 255, 0.08);
+}
+body.dark-mode[data-theme="win7"] .pcgame-card:hover {
+    border-color: #3c9ee5;
+    box-shadow: 0 2px 8px rgba(60, 158, 229, 0.45), inset 0 1px 0 rgba(255, 255, 255, 0.12);
+}
+body.dark-mode[data-theme="win7"] .pcgame-thumb {
+    border-color: #4a5666;
+}
+
+/* =====================================================================
+   TASKBAR
+   ===================================================================== */
+body.dark-mode #taskbar {
+    background: var(--dm-task);
+    border-top: 2px solid var(--dm-line);
+    box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.06);
+}
+body.dark-mode[data-theme="win7"] #taskbar {
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
+}
+
+/* Start button, window buttons, Upload Image button */
+body.dark-mode #taskbar button {
+    background: var(--dm-btn-bg);
+    color: var(--dm-text);
+    text-shadow: none;
+    border: var(--dm-btn-border);
+    border-radius: var(--dm-btn-radius);
+    box-shadow: var(--dm-btn-shadow);
+}
+body.dark-mode #taskbar button:not(:disabled):active {
+    box-shadow: var(--dm-btn-shadow-down);
+    text-shadow: none;
+}
+
+body.dark-mode #taskbar-clock {
+    background: #1b1d22;
+    color: var(--dm-text);
+    border-color: #000 var(--dm-line) var(--dm-line) #000;
+}
+
+/* =====================================================================
+   KEEP THESE AS-IS
+   ===================================================================== */
+/* Uploaded image panes stay black behind the picture */
+body.dark-mode[data-theme] div[id^="win-uploaded-"] .window-body {
     background: #000 !important;
 }
 
