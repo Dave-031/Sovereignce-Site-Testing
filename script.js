@@ -31,7 +31,11 @@ const defaultSettings = {
     showCat: true,
     catScale: 1,
     enableMeow: true,
-    meowSound: 'meow1'
+    meowSound: 'meow1',
+    darkMode: false,
+    tabCloak: false,
+    blockClose: false,
+    catTheme: 'default'
 };
 
 function loadSettings() {
@@ -46,7 +50,11 @@ function loadSettings() {
             showCat: parsed.showCat !== undefined ? parsed.showCat : defaultSettings.showCat,
             catScale: parsed.catScale !== undefined ? parsed.catScale : defaultSettings.catScale,
             enableMeow: parsed.enableMeow !== undefined ? parsed.enableMeow : defaultSettings.enableMeow,
-            meowSound: parsed.meowSound || defaultSettings.meowSound
+            meowSound: parsed.meowSound || defaultSettings.meowSound,
+            darkMode: parsed.darkMode !== undefined ? parsed.darkMode : defaultSettings.darkMode,
+            tabCloak: parsed.tabCloak !== undefined ? parsed.tabCloak : defaultSettings.tabCloak,
+            blockClose: parsed.blockClose !== undefined ? parsed.blockClose : defaultSettings.blockClose,
+            catTheme: parsed.catTheme || defaultSettings.catTheme
         };
     } catch (err) {
         return { ...defaultSettings, customBackgrounds: {} };
@@ -477,6 +485,124 @@ updateBackgroundStatus();
 updateClockVisibility();
 applyTheme(settings.selectedTheme);
 updateCatSettings();
+
+// ================== DARK MODE / TAB CLOAK / CLOSE BLOCK / CAT THEME ==================
+
+// --- Dark mode ---
+function applyDarkMode() {
+    document.body.classList.toggle('dark-mode', !!settings.darkMode);
+}
+
+// --- Tab cloak: invisible favicon + invisible title ---
+const CLOAK_ICON_URL = 'https://cdn.jsdelivr.net/gh/Dave-031/Sovereignce-Site-Testing@main/images/cloak.png';
+const CLOAK_TITLE = '\u200B'; // zero-width space
+const iconLinkEl = document.querySelector('link[rel="icon"]');
+const originalTitle = document.title;
+const originalIconHref = iconLinkEl ? iconLinkEl.href : '';
+const originalIconType = iconLinkEl ? iconLinkEl.getAttribute('type') : null;
+
+function applyTabCloak() {
+    if (settings.tabCloak) {
+        document.title = CLOAK_TITLE;
+        if (iconLinkEl) {
+            iconLinkEl.setAttribute('type', 'image/png');
+            iconLinkEl.href = CLOAK_ICON_URL;
+        }
+    } else {
+        document.title = originalTitle;
+        if (iconLinkEl) {
+            if (originalIconType) iconLinkEl.setAttribute('type', originalIconType);
+            iconLinkEl.href = originalIconHref;
+        }
+    }
+}
+// Some pages re-set the title; keep it cloaked if so
+new MutationObserver(() => {
+    if (settings.tabCloak && document.title !== CLOAK_TITLE) document.title = CLOAK_TITLE;
+}).observe(document.querySelector('title'), { childList: true, characterData: true, subtree: true });
+
+// --- Block Ctrl+W ---
+// Browsers do NOT let pages cancel Ctrl+W directly (it's a reserved shortcut),
+// so the working method is the "Leave site?" confirmation via beforeunload.
+// The keydown handler is a bonus for browsers/modes where it's allowed.
+function beforeUnloadBlocker(e) {
+    e.preventDefault();
+    e.returnValue = '';
+    return '';
+}
+function applyCloseBlock() {
+    window.removeEventListener('beforeunload', beforeUnloadBlocker);
+    if (settings.blockClose) window.addEventListener('beforeunload', beforeUnloadBlocker);
+}
+document.addEventListener('keydown', (e) => {
+    if (!settings.blockClose) return;
+    if ((e.ctrlKey || e.metaKey) && e.key.toLowerCase() === 'w') {
+        e.preventDefault();
+        e.stopPropagation();
+    }
+}, true);
+
+// --- Cat theme (swap sprite sheet) ---
+// Sprite sheets are assumed to be the same format as Idle.png:
+// 10 frames in a row, 640x64 total. Paste your links in for cat2 / cat3.
+const catSpriteUrls = {
+    default: 'https://cdn.jsdelivr.net/gh/Dave-031/Newdemo@e8dbdb9f643ee6364a3794bdd829baf72cdaaad5/cat_anim/Idle.png',
+    cat2: '', // <-- paste sprite sheet link for Cat 2
+    cat3: ''  // <-- paste sprite sheet link for Cat 3
+};
+function applyCatTheme() {
+    const catEl = document.getElementById('taskbar-cat');
+    if (!catEl) return;
+    const url = catSpriteUrls[settings.catTheme] || catSpriteUrls.default;
+    catEl.style.backgroundImage = `url('${url}')`;
+}
+
+// --- Wire up the controls ---
+const darkModeToggle = document.getElementById('dark-mode-toggle');
+if (darkModeToggle) {
+    darkModeToggle.checked = settings.darkMode;
+    darkModeToggle.addEventListener('change', (e) => {
+        settings.darkMode = e.target.checked;
+        applyDarkMode();
+        saveSettings();
+    });
+}
+
+const tabCloakToggle = document.getElementById('tab-cloak-toggle');
+if (tabCloakToggle) {
+    tabCloakToggle.checked = settings.tabCloak;
+    tabCloakToggle.addEventListener('change', (e) => {
+        settings.tabCloak = e.target.checked;
+        applyTabCloak();
+        saveSettings();
+    });
+}
+
+const blockCloseToggle = document.getElementById('block-close-toggle');
+if (blockCloseToggle) {
+    blockCloseToggle.checked = settings.blockClose;
+    blockCloseToggle.addEventListener('change', (e) => {
+        settings.blockClose = e.target.checked;
+        applyCloseBlock();
+        saveSettings();
+    });
+}
+
+const catThemeSelect = document.getElementById('cat-theme-select');
+if (catThemeSelect) {
+    catThemeSelect.value = settings.catTheme;
+    catThemeSelect.addEventListener('change', (e) => {
+        settings.catTheme = e.target.value;
+        applyCatTheme();
+        saveSettings();
+    });
+}
+
+// Apply everything saved on load
+applyDarkMode();
+applyTabCloak();
+applyCloseBlock();
+applyCatTheme();
 
 const windowsList = document.querySelectorAll('.window:not(#instructions-window)');
 const standardWindowMap = new Map();
