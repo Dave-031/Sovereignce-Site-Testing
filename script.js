@@ -35,7 +35,7 @@ const defaultSettings = {
     darkMode: false,
     tabCloak: false,
     blockClose: false,
-    catTheme: 'default'
+    catTheme: 'CatYellow'
 };
 
 function loadSettings() {
@@ -470,7 +470,10 @@ if (importSettingsBtn && importSettingsInput) {
                 });
 
                 if (backupStatus) backupStatus.innerText = 'Settings imported! Reloading…';
-                setTimeout(() => location.reload(), 700);
+                setTimeout(() => { 
+                  window.removeEventListener('beforeunload', beforeUnloadBlocker);
+                  location.reload();
+                }, 700);
             } catch (err) {
                 console.error('Settings import failed:', err);
                 if (backupStatus) backupStatus.innerText = 'Import failed — that file is not a valid settings export.';
@@ -496,30 +499,33 @@ function applyDarkMode() {
 // --- Tab cloak: invisible favicon + invisible title ---
 const CLOAK_ICON_URL = 'https://cdn.jsdelivr.net/gh/Dave-031/Sovereignce-Site-Testing@main/images/cloak.png';
 const CLOAK_TITLE = '\u200B'; // zero-width space
-const iconLinkEl = document.querySelector('link[rel="icon"]');
-const originalTitle = document.title;
-const originalIconHref = iconLinkEl ? iconLinkEl.href : '';
-const originalIconType = iconLinkEl ? iconLinkEl.getAttribute('type') : null;
+const ORIGINAL_TITLE = document.title;
+// Read the RAW attribute (not .href, which turns "" into the page URL)
+const _origIconEl = document.querySelector('link[rel~="icon"]');
+const ORIGINAL_ICON_HREF = _origIconEl ? (_origIconEl.getAttribute('href') || '') : '';
+const ORIGINAL_ICON_TYPE = _origIconEl ? (_origIconEl.getAttribute('type') || '') : '';
+
+// Browsers (esp. Chrome) don't reliably refresh a favicon when you just edit
+// href, so remove the old <link> and add a fresh one every time.
+function setFavicon(href, type) {
+    document.querySelectorAll('link[rel~="icon"]').forEach(l => l.remove());
+    if (!href) return; // no original icon -> leave the browser default
+    const link = document.createElement('link');
+    link.rel = 'icon';
+    if (type) link.type = type;
+    link.href = href;
+    document.head.appendChild(link);
+}
 
 function applyTabCloak() {
     if (settings.tabCloak) {
         document.title = CLOAK_TITLE;
-        if (iconLinkEl) {
-            iconLinkEl.setAttribute('type', 'image/png');
-            iconLinkEl.href = CLOAK_ICON_URL;
-        }
+        setFavicon(CLOAK_ICON_URL + '?v=' + Date.now(), 'image/png');
     } else {
-        document.title = originalTitle;
-        if (iconLinkEl) {
-            if (originalIconType) iconLinkEl.setAttribute('type', originalIconType);
-            iconLinkEl.href = originalIconHref;
-        }
+        document.title = ORIGINAL_TITLE;
+        setFavicon(ORIGINAL_ICON_HREF, ORIGINAL_ICON_TYPE);
     }
 }
-// Some pages re-set the title; keep it cloaked if so
-new MutationObserver(() => {
-    if (settings.tabCloak && document.title !== CLOAK_TITLE) document.title = CLOAK_TITLE;
-}).observe(document.querySelector('title'), { childList: true, characterData: true, subtree: true });
 
 // --- Block Ctrl+W ---
 // Browsers do NOT let pages cancel Ctrl+W directly (it's a reserved shortcut),
@@ -544,17 +550,22 @@ document.addEventListener('keydown', (e) => {
 
 // --- Cat theme (swap sprite sheet) ---
 // Sprite sheets are assumed to be the same format as Idle.png:
-// 10 frames in a row, 640x64 total. Paste your links in for cat2 / cat3.
+// 10 frames in a row, 640x64 total.
+const DEFAULT_CAT = 'CatYellow';
 const catSpriteUrls = {
     CatYellow: 'https://cdn.jsdelivr.net/gh/Dave-031/Sovereignce-Site-Testing@main/images/cats/cat_yellow.png',
-    CatBlack: 'https://cdn.jsdelivr.net/gh/Dave-031/Sovereignce-Site-Testing@main/images/cats/cat_black.png', // <-- paste sprite sheet link for Cat 2
-    cat3: ''  // <-- paste sprite sheet link for Cat 3
+    CatBlack: 'https://cdn.jsdelivr.net/gh/Dave-031/Sovereignce-Site-Testing@main/images/cats/cat_black.png'
+    // cat3: '' // add a link here, then re-add the <option> in index.html
 };
+// Falls back to the default for old saved values ('default') or empty links
+function resolveCatTheme(name) {
+    return catSpriteUrls[name] ? name : DEFAULT_CAT;
+}
 function applyCatTheme() {
     const catEl = document.getElementById('taskbar-cat');
     if (!catEl) return;
-    const url = catSpriteUrls[settings.catTheme] || catSpriteUrls.default;
-    catEl.style.backgroundImage = `url('${url}')`;
+    settings.catTheme = resolveCatTheme(settings.catTheme);
+    catEl.style.backgroundImage = `url('${catSpriteUrls[settings.catTheme]}')`;
 }
 
 // --- Wire up the controls ---
@@ -590,7 +601,7 @@ if (blockCloseToggle) {
 
 const catThemeSelect = document.getElementById('cat-theme-select');
 if (catThemeSelect) {
-    catThemeSelect.value = settings.catTheme;
+    catThemeSelect.value = resolveCatTheme(settings.catTheme);
     catThemeSelect.addEventListener('change', (e) => {
         settings.catTheme = e.target.value;
         applyCatTheme();
@@ -603,6 +614,7 @@ applyDarkMode();
 applyTabCloak();
 applyCloseBlock();
 applyCatTheme();
+saveSettings(); // persists any normalized value (e.g. old 'default' cat)
 
 const windowsList = document.querySelectorAll('.window:not(#instructions-window)');
 const standardWindowMap = new Map();
@@ -649,7 +661,7 @@ function applyDefaultLayout(options = {}) {
 
     windowsList.forEach((windowEl, index) => {
         windowEl.classList.remove('maximized');
-        windowEl.style.display = open ? ((windowEl.id === 'win-pcgames') ? 'all' : 'flex') : 'none';
+        windowEl.style.display = open ? 'flex' : 'none';
         if (open) {
             cascadePosition(windowEl, index);
             windowEl.dataset.userMoved = 'false';
