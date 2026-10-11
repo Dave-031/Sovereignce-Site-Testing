@@ -509,7 +509,8 @@ body.dark-mode[data-theme="winxp"] .window-body button:not(:disabled):hover {
     border-color: #4f86e8 !important;
 }
 body.dark-mode[data-theme="win7"] .window-body button:not(:disabled):hover {
-    border-color: #3c7fb1 !important;
+    border-color: #2a5a82 !important; /* Muted, deeper blue */
+    filter: brightness(1.05) !important; /* Reduced brightness boost from 1.18 to 1.05 */
 }
 
 /* Theme-drawn radio buttons (the circle + dot are pseudo-elements) */
