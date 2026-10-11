@@ -472,18 +472,44 @@ body.dark-mode .window-body fieldset {
     background: transparent !important;
 }
 body.dark-mode .window-body legend {
+    position: relative !important;   /* paint above the fieldset border */
+    z-index: 2 !important;
+    float: none !important;
     background: var(--dm-win) !important;
     padding: 0 4px !important;
 }
 
 /* ---------- Form controls: invert so each theme keeps its own style ---------- */
 body.dark-mode .window-body :is(
-    button,
     select,
     textarea,
     input:not([type="checkbox"]):not([type="radio"]):not([type="file"])
 ) {
     filter: invert(0.88) hue-rotate(180deg);
+}
+
+/* Buttons are styled directly from the theme palette (no filter), so
+   there's no color tint. !important is needed to beat inline styles
+   like the wallpaper "Revert" buttons. */
+body.dark-mode .window-body button {
+    background: var(--dm-btn-bg) !important;
+    color: var(--dm-text) !important;
+    text-shadow: none !important;
+    border: var(--dm-btn-border) !important;
+    border-radius: var(--dm-btn-radius) !important;
+    box-shadow: var(--dm-btn-shadow) !important;
+}
+body.dark-mode .window-body button:not(:disabled):hover {
+    filter: brightness(1.18);
+}
+body.dark-mode .window-body button:not(:disabled):active {
+    box-shadow: var(--dm-btn-shadow-down) !important;
+}
+body.dark-mode[data-theme="winxp"] .window-body button:not(:disabled):hover {
+    border-color: #4f86e8 !important;
+}
+body.dark-mode[data-theme="win7"] .window-body button:not(:disabled):hover {
+    border-color: #3c7fb1 !important;
 }
 
 /* Theme-drawn radio buttons (the circle + dot are pseudo-elements) */
