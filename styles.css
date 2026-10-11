@@ -347,8 +347,8 @@ div[id^="win-uploaded-"] .window-body {
    Only recolors the light content inside windows (and the game cards).
    Title bars, borders and the taskbar keep the theme's own look.
    Uses [style*=...] because most of the light text/backgrounds are inline styles. */
-body.dark-mode .window-body {
-    background: #1e1e1e !important;
+body.dark-mode .window-body select option {
+    background: #2b2b2b;
     color: #e8e8e8 !important;
 }
 
