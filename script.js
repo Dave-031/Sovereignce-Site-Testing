@@ -546,8 +546,8 @@ document.addEventListener('keydown', (e) => {
 // Sprite sheets are assumed to be the same format as Idle.png:
 // 10 frames in a row, 640x64 total. Paste your links in for cat2 / cat3.
 const catSpriteUrls = {
-    default: 'https://cdn.jsdelivr.net/gh/Dave-031/Newdemo@e8dbdb9f643ee6364a3794bdd829baf72cdaaad5/cat_anim/Idle.png',
-    cat2: '', // <-- paste sprite sheet link for Cat 2
+    CatYellow: 'https://cdn.jsdelivr.net/gh/Dave-031/Sovereignce-Site-Testing@main/images/cats/cat_yellow.png',
+    CatBlack: 'https://cdn.jsdelivr.net/gh/Dave-031/Sovereignce-Site-Testing@main/images/cats/cat_black.png', // <-- paste sprite sheet link for Cat 2
     cat3: ''  // <-- paste sprite sheet link for Cat 3
 };
 function applyCatTheme() {
